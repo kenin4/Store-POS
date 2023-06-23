@@ -94,11 +94,19 @@ app.post( "/product", upload.single('imagename'), function ( req, res ) {
         quantity: req.body.quantity == "" ? 0 : req.body.quantity,
         name: req.body.name,
         stock: req.body.stock == "on" ? 0 : 1,    
-        img: image        
+        img: image,
+        barcode: req.body.barcode,
     }
 
+    console.log(Product);
+
     if(req.body.id == "") { 
-        Product._id = Math.floor(Date.now() / 1000);
+        if(req.body.barcode == "") {
+            Product._id = Math.floor(Date.now() / 1000);
+        }
+        else {
+            Product._id = parseInt(req.body.barcode);
+        }
         inventoryDB.insert( Product, function ( err, product ) {
             if ( err ) res.status( 500 ).send( err );
             else res.send( product );
